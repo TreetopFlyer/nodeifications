@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="theme-color" content="#FFCC00">
+        <link rel="manifest" href="/static/manifest.json">
+    </head>
+    <body>
+        <div>
+            <div>wow. just wow.</div>
+        </div>
+      <noscript>
+        javascript disabled :(
+      </noscript>
+      <script>
+        var SW;
+        var Sub;
+        const Bytes = (inString) =>
+        {
+          const padding = '='.repeat((4 - inString.length % 4) % 4);
+          const base64 = (inString + padding).replace(/\-/g, '+').replace(/_/g, '/');
+
+          const rawData = window.atob(base64);
+          const outputArray = new Uint8Array(rawData.length);
+
+          for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+          }
+          return outputArray;
+        }
+        const LoadSW = () =>
+        {
+            navigator.serviceWorker
+            .register('/static/service-worker.js')
+            .then((inWorker)=>
+            {
+                SW = inWorker; console.log("service worker ok");
+                var options;
+                options = {
+                    userVisibleOnly: true,
+                    applicationServerKey: Bytes("BGWw_6aPXY1L3c-Ejc1148P7UX71ILpLj0DxF1ZJWgcs2zR1xMe2xylrk_rzM_GenEDyvH2O5FH3L9R7STByl9g")
+                };
+                SW.pushManager
+                .subscribe(options)
+                .then((inSubscription)=>{
+                    Sub = inSubscription;
+                    if(Sub !== null)
+                    {
+                        console.log("subscription registered. passing to backend...");
+                        fetch("/subscribe",
+                        {
+                            method:"POST",
+                            body: JSON.stringify(Sub),
+                            headers:{"content-type":"application/json"}
+                        })
+                        .then(()=>
+                        {
+                            console.log("...done");
+                        });
+                    }
+                    else
+                    {
+                        console.log("subscription came back null");
+                    }
+                })
+                .catch((inError)=>{console.log(inError);})
+            });
+        };
+        const Init = () =>
+        {
+            document.querySelector("button.Subscribe")
+            LoadSW();
+        };
+        Init();
+        </script>
+    </body>
+</html>

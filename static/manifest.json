@@ -1,0 +1,21 @@
+{
+  "short_name": "DatApp",
+  "name": "The App",
+  "scope": "/static",
+  "start_url": "/static/index.html",
+  "display": "standalone",
+  "background_color": "#3367D6",
+  "theme_color": "#3367D6",
+  "icons": [
+    {
+      "src": "/static/images/IconApp192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/images/IconApp192.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
